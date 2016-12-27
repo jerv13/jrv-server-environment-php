@@ -9,7 +9,7 @@ use Jerv\Server\Exception\ServerException;
  */
 class PathData implements Data
 {
-    const PATH_DEFAULT = __DIR__ . '/../../data';
+    const PATH_DEFAULT = __DIR__ . '/../../../../../data/_server';
 
     /**
      * @var string

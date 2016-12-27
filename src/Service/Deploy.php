@@ -132,6 +132,14 @@ class Deploy
         );
     }
 
+    public function buildGitIgnore()
+    {
+        $this->buildDataFile(
+            '.gitignore',
+            Secrets::FILENAME
+        );
+    }
+
     /**
      * main
      *
@@ -152,5 +160,6 @@ class Deploy
         $this->buildEnvProductionFile($evnProduction);
         $this->buildVersionFile($version);
         $this->buildSecretsFile($secrets);
+        $this->buildGitIgnore();
     }
 }

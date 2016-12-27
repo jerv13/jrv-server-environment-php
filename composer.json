@@ -1,12 +1,15 @@
 {
   "name": "jerv13/jerv-server",
-  "description": "Configurable DI for the ZF service manager. Modeled after Symfony 2's DI config files.",
+  "description": "Deployment based server environment setup and config for 12 factor application support",
   "type": "library",
   "license": "BSD",
   "keywords": [
-
+    "deployment",
+    "server",
+    "environment",
+    "12 factor"
   ],
-  "homepage": "git@github.com:jerv13/jerv-server.git",
+  "homepage": "https://github.com//jerv-server.git",
   "authors": [
     {
       "name": "James Jervis",
@@ -17,6 +20,6 @@
     "php": ">=7.0"
   },
   "require-dev": {
-    "phpunit/phpunit": ">4.0",
+    "phpunit/phpunit": ">4.0"
   }
 }

@@ -124,7 +124,7 @@ class Deploy
     {
         $contents = var_export($secrets, true);
 
-        $contents = 'return ' . $contents . ";\n";
+        $contents = '<?php return ' . $contents . ";\n";
 
         $this->buildDataFile(
             Secrets::FILENAME,

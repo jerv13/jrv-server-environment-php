@@ -1,6 +1,6 @@
 <?php
 
-namespace Jerv\Server\Service;
+namespace Jerv\Server\Middleware;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,8 +14,19 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Bootstrap
 {
+    /**
+     * @var string
+     */
     protected $pathServerConfig = null;
+
+    /**
+     * @var string
+     */
     protected $pathConfig = null;
+
+    /**
+     * @var string
+     */
     protected $pathData = null;
 
     /**

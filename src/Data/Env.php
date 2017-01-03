@@ -116,6 +116,7 @@ class Env implements Data
         self::$serverConfig = require($file);
 
         self::buildServerVars();
+        self::setInit();
     }
 
     /**
@@ -144,9 +145,32 @@ class Env implements Data
         self::$vars = $vars;
     }
 
+    /**
+     * setInit
+     *
+     * @return void
+     */
     protected static function setInit()
     {
+        $initSet = null;
 
+        $serverConfig = self::$serverConfig;
+
+        if (!is_array($serverConfig)) {
+            $serverConfig = [];
+        }
+
+        if (array_key_exists(self::INIT_SET_KEY, $serverConfig)) {
+            $initSet = $serverConfig[self::VARS_KEY];
+        }
+
+        if (!is_array($initSet)) {
+            $initSet = [];
+        }
+
+        foreach ($initSet as $key => $value) {
+            ini_set($key, $value);
+        }
     }
 
     /**
@@ -195,6 +219,8 @@ class Env implements Data
     }
 
     /**
+     * getEnv
+     *
      * @return string
      */
     public static function getEnv()

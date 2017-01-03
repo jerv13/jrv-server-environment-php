@@ -132,6 +132,11 @@ class Deploy
         );
     }
 
+    /**
+     * buildGitIgnore
+     *
+     * @return void
+     */
     public function buildGitIgnore()
     {
         $this->buildDataFile(

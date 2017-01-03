@@ -13,7 +13,20 @@ use Jerv\Server\Data\Version;
  */
 class Server
 {
+    /**
+     * @var string
+     */
     protected $dataPath;
+
+    /**
+     * @var string
+     */
+    protected $serverConfigPath;
+
+    /**
+     * @var string
+     */
+    protected $configPath;
 
     /**
      * @var bool
@@ -44,6 +57,8 @@ class Server
      * Constructor.
      *
      * @param string $dataPath
+     * @param string $serverConfigPath
+     * @param string $configPath
      * @param bool   $isProduction
      * @param string $env
      * @param array  $envVars
@@ -52,6 +67,8 @@ class Server
      */
     public function __construct(
         $dataPath,
+        $serverConfigPath,
+        $configPath,
         $isProduction = true,
         $env = 'prod',
         $envVars = [],
@@ -59,6 +76,8 @@ class Server
         $version = Version::VERSION_DEFAULT
     ) {
         $this->dataPath = $dataPath;
+        $this->serverConfigPath = $serverConfigPath;
+        $this->configPath = $configPath;
         $this->production = $isProduction;
         $this->env = $env;
         $this->envVars = $envVars;
@@ -77,7 +96,29 @@ class Server
     }
 
     /**
-     * @return boolean
+     * getServerConfigPath
+     *
+     * @return string
+     */
+    public function getServerConfigPath(): string
+    {
+        return $this->serverConfigPath;
+    }
+
+    /**
+     * getConfigPath
+     *
+     * @return string
+     */
+    public function getConfigPath(): string
+    {
+        return $this->configPath;
+    }
+
+    /**
+     * isProduction
+     *
+     * @return bool
      */
     public function isProduction(): bool
     {
@@ -92,6 +133,16 @@ class Server
     public function getEnv(): string
     {
         return $this->env;
+    }
+
+    /**
+     * getEnvVars
+     *
+     * @return array
+     */
+    public function getEnvVars(): array
+    {
+        return $this->envVars;
     }
 
     /**

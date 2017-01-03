@@ -43,7 +43,7 @@ class Env implements Data
     /**
      * @var bool
      */
-    protected static $production = true;
+    protected static $production = null;
 
     /**
      * @var array
@@ -105,7 +105,7 @@ class Env implements Data
      */
     protected static function buildServerConfig($pathServerConfig)
     {
-        if (empty(self::$serverConfig)) {
+        if (!empty(self::$serverConfig)) {
             return;
         }
 
@@ -165,7 +165,7 @@ class Env implements Data
         }
 
         if (!is_array($initSet)) {
-            $initSet = [];
+            return;
         }
 
         foreach ($initSet as $key => $value) {
@@ -251,7 +251,7 @@ class Env implements Data
     {
         self::assertBuilt();
 
-        return self::$serverConfig;
+        return self::$vars;
     }
 
     /**

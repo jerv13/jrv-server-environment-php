@@ -63,7 +63,7 @@ class Args
 
         $len = strlen($arg);
 
-        $key = substr($arg, 0, $pos - 1);
+        $key = substr($arg, 0, $pos);
         $value = substr($arg, $pos + 1, $len);
 
         $this->args[$key] = $value;

@@ -25,6 +25,10 @@ class Env implements Data
 
     const INIT_SET_KEY = 'init-set';
 
+    const SERVER_CONFIG_FILE = '_server.php';
+
+    const SERVER_CONFIG_KEY = '_server';
+
     /**
      * @var bool
      */
@@ -76,7 +80,7 @@ class Env implements Data
     protected static function buildEvn($pathData)
     {
         if (empty(self::$env)) {
-            $file = $pathData . '/' . self::FILENAME_ENV;
+            $file = realpath($pathData . '/' . self::FILENAME_ENV);
             self::$env = trim(fgets(fopen($file, 'r')));
         }
     }
@@ -89,7 +93,7 @@ class Env implements Data
     protected static function buildProduction($pathData)
     {
         if (empty(self::$production)) {
-            $file = $pathData . '/' . self::FILENAME_ENV_PRODUCTION;
+            $file = realpath($pathData . '/' . self::FILENAME_ENV_PRODUCTION);
             $productionEnv = trim(fgets(fopen($file, 'r')));
             self::$production = ($productionEnv === self::$env);
         }
@@ -98,22 +102,33 @@ class Env implements Data
     /**
      * buildServerConfig
      *
-     * @param string $pathServerConfig
+     * @param string $serverConfigFile
+     * @param string $serverConfigKey
      *
      * @return void
      * @throws ServerException
      */
-    protected static function buildServerConfig($pathServerConfig)
-    {
+    protected static function buildServerConfig(
+        $serverConfigFile = self::SERVER_CONFIG_FILE,
+        $serverConfigKey = self::SERVER_CONFIG_KEY
+    ) {
         if (!empty(self::$serverConfig)) {
             return;
         }
 
-        $file = $pathServerConfig . '/' . self::$env . '.php';
+        if (empty(self::$envConfigPath)) {
+            throw new ServerException('envConfigPath must be set');
+        }
+
+        $file = realpath(self::$envConfigPath . '/' . $serverConfigFile);
+
         if (!file_exists($file)) {
             throw new ServerException('Server config file not found: ' . $file);
         }
-        self::$serverConfig = require($file);
+
+        $serverConfig = require($file);
+
+        self::$serverConfig = $serverConfig[$serverConfigKey];
 
         self::buildServerVars();
         self::setInit();
@@ -161,7 +176,7 @@ class Env implements Data
         }
 
         if (array_key_exists(self::INIT_SET_KEY, $serverConfig)) {
-            $initSet = $serverConfig[self::VARS_KEY];
+            $initSet = $serverConfig[self::INIT_SET_KEY];
         }
 
         if (!is_array($initSet)) {
@@ -176,12 +191,19 @@ class Env implements Data
     /**
      * buildEvnConfigPath
      *
+     * @param $pathConfig
+     *
      * @return void
+     * @throws ServerException
      */
     protected static function buildEvnConfigPath($pathConfig)
     {
+        if (empty(self::$env)) {
+            throw new ServerException('env must be set');
+        }
+
         if (empty(self::$envConfigPath)) {
-            $path = $pathConfig . '/' . self::$env;
+            $path = realpath($pathConfig . '/' . self::$env);
             self::$envConfigPath = $path;
         }
     }
@@ -189,21 +211,23 @@ class Env implements Data
     /**
      * build
      *
-     * @param $pathData
-     * @param $pathServerConfig
-     * @param $pathConfig
+     * @param string $pathConfig
+     * @param string $serverConfigFile
+     * @param string $serverConfigKey
+     * @param string $pathData
      *
      * @return void
      */
     public static function build(
-        $pathData,
-        $pathServerConfig,
-        $pathConfig
+        $pathConfig = PathConfig::PATH_DEFAULT,
+        $serverConfigFile = self::SERVER_CONFIG_FILE,
+        $serverConfigKey = self::SERVER_CONFIG_KEY,
+        $pathData = PathData::PATH_DEFAULT
     ) {
         self::buildEvn($pathData);
         self::buildProduction($pathData);
-        self::buildServerConfig($pathServerConfig);
         self::buildEvnConfigPath($pathConfig);
+        self::buildServerConfig($serverConfigFile, $serverConfigKey);
 
         self::$built = true;
     }

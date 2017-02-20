@@ -28,34 +28,35 @@ class ServerFactory
     /**
      * build - Done on bootstrap
      *
-     * @param string|null $pathServerConfig
-     * @param string|null $pathConfig
-     * @param string|null $pathData
+     * @param string $pathConfig
+     * @param string $serverConfigFile
+     * @param string $serverConfigKey
+     * @param string $pathData
      *
      * @return void
      */
     public static function build(
-        $pathServerConfig = null,
-        $pathConfig = null,
-        $pathData = null
+        $pathConfig = PathConfig::PATH_DEFAULT,
+        $serverConfigFile = Env::SERVER_CONFIG_FILE,
+        $serverConfigKey = Env::SERVER_CONFIG_KEY,
+        $pathData = PathData::PATH_DEFAULT
     ) {
 
         if (!empty(self::$instance)) {
             return;
         }
 
-        PathServerConfig::build($pathServerConfig);
         PathConfig::build($pathConfig);
         PathData::build($pathData);
 
         $pathData = PathData::get();
-        $pathServerConfig = PathServerConfig::get();
         $pathConfig = PathConfig::get();
 
         Env::build(
-            $pathData,
-            $pathServerConfig,
-            $pathConfig
+            $pathConfig,
+            $serverConfigFile,
+            $serverConfigKey,
+            $pathData
         );
 
         Secrets::build(
@@ -68,7 +69,6 @@ class ServerFactory
 
         self::$instance = new Server(
             $pathData,
-            $pathServerConfig,
             $pathConfig,
             Env::isProduction(),
             Env::get(),

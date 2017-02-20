@@ -32,12 +32,12 @@ class PathConfig implements Data
     /**
      * build
      *
-     * @param null $pathConfig
+     * @param string $pathConfig
      *
      * @return void
      * @throws ServerException
      */
-    public static function build($pathConfig = null)
+    public static function build($pathConfig = self::PATH_DEFAULT)
     {
         if (!empty(self::$pathConfig)) {
             // Only build once

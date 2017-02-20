@@ -2,6 +2,9 @@
 
 namespace Jerv\Server\Middleware;
 
+use Jerv\Server\Data\Env;
+use Jerv\Server\Data\PathConfig;
+use Jerv\Server\Data\PathData;
 use Jerv\Server\Service\ServerFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -18,12 +21,17 @@ class Bootstrap
     /**
      * @var string
      */
-    protected $pathServerConfig = null;
+    protected $pathConfig = null;
 
     /**
      * @var string
      */
-    protected $pathConfig = null;
+    protected $serverConfigFile = null;
+
+    /**
+     * @var string
+     */
+    protected $serverConfigKey;
 
     /**
      * @var string
@@ -33,17 +41,20 @@ class Bootstrap
     /**
      * Constructor.
      *
-     * @param null $pathServerConfig
-     * @param null $pathConfig
-     * @param null $pathData
+     * @param string $pathConfig
+     * @param string $serverConfigFile
+     * @param string $serverConfigKey
+     * @param string $pathData
      */
     public function __construct(
-        $pathServerConfig = null,
-        $pathConfig = null,
-        $pathData = null
+        $pathConfig = PathConfig::PATH_DEFAULT,
+        $serverConfigFile = Env::SERVER_CONFIG_FILE,
+        $serverConfigKey = Env::SERVER_CONFIG_KEY,
+        $pathData = PathData::PATH_DEFAULT
     ) {
-        $this->pathServerConfig = $pathServerConfig;
         $this->pathConfig = $pathConfig;
+        $this->serverConfigFile = $serverConfigFile;
+        $this->serverConfigKey = $serverConfigKey;
         $this->pathData = $pathData;
     }
 
@@ -62,8 +73,9 @@ class Bootstrap
         callable $next = null
     ) {
         ServerFactory::build(
-            $this->pathServerConfig,
             $this->pathConfig,
+            $this->serverConfigFile,
+            $this->serverConfigKey,
             $this->pathData
         );
 

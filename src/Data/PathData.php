@@ -32,11 +32,11 @@ class PathData implements Data
     /**
      * build
      *
-     * @param null $pathData
+     * @param string $pathData
      *
      * @return void
      */
-    public static function build($pathData = null)
+    public static function build($pathData = self::PATH_DEFAULT)
     {
         if (!empty(self::$pathData)) {
             // Only build once

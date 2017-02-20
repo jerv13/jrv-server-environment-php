@@ -3,6 +3,7 @@
 namespace Jerv\Server\Service;
 
 use Jerv\Server\Data\Version;
+use Jerv\Server\Exception\ServerException;
 
 /**
  * Class Server
@@ -17,11 +18,6 @@ class Server
      * @var string
      */
     protected $dataPath;
-
-    /**
-     * @var string
-     */
-    protected $serverConfigPath;
 
     /**
      * @var string
@@ -57,7 +53,6 @@ class Server
      * Constructor.
      *
      * @param string $dataPath
-     * @param string $serverConfigPath
      * @param string $configPath
      * @param bool   $isProduction
      * @param string $env
@@ -67,7 +62,6 @@ class Server
      */
     public function __construct(
         $dataPath,
-        $serverConfigPath,
         $configPath,
         $isProduction = true,
         $env = 'prod',
@@ -75,14 +69,32 @@ class Server
         $secrets = [],
         $version = Version::VERSION_DEFAULT
     ) {
-        $this->dataPath = $dataPath;
-        $this->serverConfigPath = $serverConfigPath;
-        $this->configPath = $configPath;
+        $this->setDataPath($dataPath);
+        $this->setConfigPath($configPath);
         $this->production = $isProduction;
         $this->env = $env;
         $this->envVars = $envVars;
         $this->secrets = $secrets;
         $this->version = $version;
+    }
+
+    /**
+     * setDataPath
+     *
+     * @param string $dataPath
+     *
+     * @return void
+     * @throws ServerException
+     */
+    protected function setDataPath($dataPath)
+    {
+        $dataPath = realpath($dataPath);
+
+        if (empty($dataPath)) {
+            throw new ServerException('Data path cannot be empty');
+        }
+
+        $this->dataPath = $dataPath;
     }
 
     /**
@@ -96,13 +108,22 @@ class Server
     }
 
     /**
-     * getServerConfigPath
+     * setConfigPath
      *
-     * @return string
+     * @param string $configPath
+     *
+     * @return void
+     * @throws ServerException
      */
-    public function getServerConfigPath(): string
+    protected function setConfigPath($configPath)
     {
-        return $this->serverConfigPath;
+        $configPath = realpath($configPath);
+
+        if (empty($configPath)) {
+            throw new ServerException('Config path cannot be empty');
+        }
+
+        $this->configPath = $configPath;
     }
 
     /**

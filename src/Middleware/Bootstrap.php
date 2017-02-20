@@ -2,6 +2,7 @@
 
 namespace Jerv\Server\Middleware;
 
+use Jerv\Server\Service\ServerFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

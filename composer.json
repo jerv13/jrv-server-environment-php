@@ -9,7 +9,7 @@
     "environment",
     "12 factor"
   ],
-  "homepage": "https://github.com//server-environment.git",
+  "homepage": "https://github.com/jerv13/server-environment",
   "authors": [
     {
       "name": "James Jervis",
@@ -24,7 +24,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Jerv\\Server\\": "src/"
+      "Jerv\\ServerEnvironment\\": "src/"
     }
   }
 }

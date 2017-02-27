@@ -1,10 +1,10 @@
 <?php
 
-namespace Jerv\Server\Service;
+namespace Jerv\ServerEnvironment\Service;
 
-use Jerv\Server\Data\Env;
-use Jerv\Server\Data\Secrets;
-use Jerv\Server\Data\Version;
+use Jerv\ServerEnvironment\Data\Env;
+use Jerv\ServerEnvironment\Data\Secrets;
+use Jerv\ServerEnvironment\Data\Version;
 
 /**
  * Class Deploy

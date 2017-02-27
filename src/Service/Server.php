@@ -1,9 +1,9 @@
 <?php
 
-namespace Jerv\Server\Service;
+namespace Jerv\ServerEnvironment\Service;
 
-use Jerv\Server\Data\Version;
-use Jerv\Server\Exception\ServerException;
+use Jerv\ServerEnvironment\Data\Version;
+use Jerv\ServerEnvironment\Exception\ServerException;
 
 /**
  * Class Server

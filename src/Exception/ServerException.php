@@ -1,6 +1,6 @@
 <?php
 
-namespace Jerv\Server\Exception;
+namespace Jerv\ServerEnvironment\Exception;
 
 /**
  * Class ServerException

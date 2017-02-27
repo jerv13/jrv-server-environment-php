@@ -1,6 +1,6 @@
 <?php
 
-namespace Jerv\Server\Data;
+namespace Jerv\ServerEnvironment\Data;
 
 /**
  * Class Data

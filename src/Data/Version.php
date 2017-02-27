@@ -1,8 +1,8 @@
 <?php
 
-namespace Jerv\Server\Data;
+namespace Jerv\ServerEnvironment\Data;
 
-use Jerv\Server\Exception\ServerException;
+use Jerv\ServerEnvironment\Exception\ServerException;
 
 /**
  * Class Version

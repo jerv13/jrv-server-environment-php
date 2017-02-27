@@ -1,11 +1,11 @@
 <?php
 
-namespace Jerv\Server\Middleware;
+namespace Jerv\ServerEnvironment\Middleware;
 
-use Jerv\Server\Data\Env;
-use Jerv\Server\Data\PathConfig;
-use Jerv\Server\Data\PathData;
-use Jerv\Server\Service\ServerFactory;
+use Jerv\ServerEnvironment\Data\Env;
+use Jerv\ServerEnvironment\Data\PathConfig;
+use Jerv\ServerEnvironment\Data\PathData;
+use Jerv\ServerEnvironment\Service\ServerFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

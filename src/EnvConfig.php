@@ -1,8 +1,8 @@
 <?php
 
-namespace Jerv\Server;
+namespace Jerv\ServerEnvironment;
 
-use Jerv\Server\Service\ServerFactory;
+use Jerv\ServerEnvironment\Service\ServerFactory;
 
 /**
  * Class EnvConfig

@@ -1,5 +1,5 @@
 {
-  "name": "jerv13/jerv-server",
+  "name": "jerv/server-environment",
   "description": "Deployment based server environment setup and config for 12 factor application support",
   "type": "library",
   "license": "BSD",
@@ -9,7 +9,7 @@
     "environment",
     "12 factor"
   ],
-  "homepage": "https://github.com//jerv-server.git",
+  "homepage": "https://github.com//server-environment.git",
   "authors": [
     {
       "name": "James Jervis",

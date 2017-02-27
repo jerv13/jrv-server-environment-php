@@ -1,6 +1,6 @@
 <?php
 
-namespace Jerv\Server\Service;
+namespace Jerv\ServerEnvironment\Service;
 
 /**
  * Class Args

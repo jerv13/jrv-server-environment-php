@@ -1,15 +1,15 @@
 <?php
 
-namespace Jerv\Server\Service;
+namespace Jerv\ServerEnvironment\Service;
 
 use Interop\Container\ContainerInterface;
-use Jerv\Server\Data\Env;
-use Jerv\Server\Data\PathConfig;
-use Jerv\Server\Data\PathData;
-use Jerv\Server\Data\PathServerConfig;
-use Jerv\Server\Data\Secrets;
-use Jerv\Server\Data\Version;
-use Jerv\Server\Exception\ServerException;
+use Jerv\ServerEnvironment\Data\Env;
+use Jerv\ServerEnvironment\Data\PathConfig;
+use Jerv\ServerEnvironment\Data\PathData;
+use Jerv\ServerEnvironment\Data\PathServerConfig;
+use Jerv\ServerEnvironment\Data\Secrets;
+use Jerv\ServerEnvironment\Data\Version;
+use Jerv\ServerEnvironment\Exception\ServerException;
 
 /**
  * Class ServerFactory

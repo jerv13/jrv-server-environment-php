@@ -1,0 +1,36 @@
+Used to generate files required to set env, secrets and version
+
+Usage:
+
+php deploy.php [env={ENV_NAME}]
+               [env-production={ENV_PRODUCTION_NAME}]
+               [version={VERSION_STRING}]
+               [secrets-file-json={SECRETS_FILE_JSON}]
+               [secrets={SECRETS_JSON}]
+
+               [path-app-config={PATH}]
+               [server-config-filename={SERVER_CONFIG_FILE}]
+               [server-config-key={SERVER_CONFIG_KEY}]
+               [path-app-data={PATH_DEFAULT}]
+
+               [permissions-app-data-folder={FOLDER_PERMISSIONS}]
+               [permissions-app-data-file={FILE_PERMISSIONS}]
+               
+Defaults:
+
+env='prod'                                      // name of current env
+env-production='prod'                           // name of production env
+version='unknown'                               // version of current code
+secrets-file-json=null                          // file path to some-file.json
+secrets={}                                      // secrets as json (not recommended)
+
+path-app-config=/../../../../../config          // path to app config
+server-config-filename=_server.php              // name of app config file for server AKA: /../../../../../config/prod/_server.php
+server-config-key=_server                       // config key for server config
+path-app-data='/../../../../../data/_server'    // path to app data folder
+
+permissions-app-data-folder=0755                // app data folder permissions
+permissions-app-data-file=0655                  // app data file permissions
+
+
+

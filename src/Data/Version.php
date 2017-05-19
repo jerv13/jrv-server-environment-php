@@ -11,7 +11,7 @@ class Version implements Data
 {
     const VERSION_DEFAULT = 'unknown';
 
-    const FILENAME = 'version';
+    const FILENAME = 'version.php';
 
     /**
      * @var bool
@@ -56,7 +56,7 @@ class Version implements Data
             return;
         }
 
-        self::$version = trim(fgets(fopen($file, 'r')));
+        self::$version = require($file);
     }
 
     /**

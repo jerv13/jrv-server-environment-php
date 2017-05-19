@@ -3,6 +3,7 @@
 namespace Jerv\ServerEnvironment\Service;
 
 use Jerv\ServerEnvironment\Data\Env;
+use Jerv\ServerEnvironment\Data\PathConfig;
 use Jerv\ServerEnvironment\Data\Secrets;
 use Jerv\ServerEnvironment\Data\Version;
 
@@ -16,35 +17,43 @@ use Jerv\ServerEnvironment\Data\Version;
 class Deploy
 {
     /**
-     * @var Server
+     * @var string
      */
-    protected $server;
+    protected $dataPath;
 
     /**
      * @var int
      */
-    protected $dataFolderPermissions = 0755;
+    protected $dataFolderPermissions = Permissions::DEFAULT_FOLDER;
 
     /**
      * @var int
      */
-    protected $dataFilePermissions = 0655;
+    protected $dataFilePermissions = Permissions::DEFAULT_FILE;
 
     /**
-     * Constructor.
-     *
-     * @param Server $server
+     * @param string $dataPath
      * @param int    $dataFolderPermissions
      * @param int    $dataFilePermissions
      */
     public function __construct(
-        Server $server,
-        $dataFolderPermissions = 0755,
-        $dataFilePermissions = 0655
+        $dataPath = PathConfig::PATH_DEFAULT,
+        $dataFolderPermissions = Permissions::DEFAULT_FOLDER,
+        $dataFilePermissions = Permissions::DEFAULT_FILE
     ) {
-        $this->server = $server;
+        $this->dataPath = $dataPath;
         $this->dataFolderPermissions = $dataFolderPermissions;
         $this->dataFilePermissions = $dataFilePermissions;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return void
+     */
+    protected function output($message)
+    {
+        echo $message . "\n";
     }
 
     /**
@@ -57,13 +66,28 @@ class Deploy
      */
     protected function buildDataFile($filename, $contents)
     {
-        $dataPath = $this->server->getDataPath();
+        $contents = "<?php return " . $contents . ";\n";
+
+        $this->buildFile($filename, $contents);
+    }
+
+    /**
+     * @param $filename
+     * @param $contents
+     *
+     * @return void
+     */
+    protected function buildFile($filename, $contents)
+    {
+        $dataPath = $this->dataPath;
 
         if (!file_exists($dataPath)) {
             mkdir($dataPath, $this->dataFolderPermissions);
         }
 
-        $file = $dataPath . '/' . $filename;
+        $file = realpath($dataPath . '/' . $filename);
+
+        $this->output('Writing contents to ' . $file);
 
         file_put_contents($file, $contents);
     }
@@ -77,9 +101,11 @@ class Deploy
      */
     public function buildEnvFile($env)
     {
+        $env = "'" . trim($env) . "'";
+        $this->output('Preparing evn ' . substr($env, 0, 4) . '... ');
         $this->buildDataFile(
             Env::FILENAME_ENV,
-            trim($env)
+            $env
         );
     }
 
@@ -92,9 +118,11 @@ class Deploy
      */
     public function buildEnvProductionFile($evnProduction)
     {
+        $evnProduction = "'" . trim($evnProduction) . "'";
+        $this->output('Preparing env production ' . substr($evnProduction, 0, 4) . '... ');
         $this->buildDataFile(
             Env::FILENAME_ENV_PRODUCTION,
-            trim($evnProduction)
+            $evnProduction
         );
     }
 
@@ -107,9 +135,11 @@ class Deploy
      */
     public function buildVersionFile($version)
     {
+        $version = "'" . trim($version) . "'";
+        $this->output('Preparing version ' . substr($version, 0, 4) . '... ');
         $this->buildDataFile(
             Version::FILENAME,
-            trim($version)
+            $version
         );
     }
 
@@ -124,7 +154,9 @@ class Deploy
     {
         $contents = var_export($secrets, true);
 
-        $contents = '<?php return ' . $contents . ";\n";
+        $output = json_encode($secrets);
+
+        $this->output('Preparing secrets ' . substr($output, 0, 10) . '... ');
 
         $this->buildDataFile(
             Secrets::FILENAME,
@@ -139,7 +171,8 @@ class Deploy
      */
     public function buildGitIgnore()
     {
-        $this->buildDataFile(
+        $this->output('Preparing .gitignore ');
+        $this->buildFile(
             '.gitignore',
             Secrets::FILENAME
         );

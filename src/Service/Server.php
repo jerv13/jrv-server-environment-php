@@ -218,4 +218,14 @@ class Server
     {
         return $this->version;
     }
+
+    /**
+     * @return array
+     */
+    public function __toArray(): array
+    {
+        $array = get_object_vars($this);
+
+        return $array;
+    }
 }

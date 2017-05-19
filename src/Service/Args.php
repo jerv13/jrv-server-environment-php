@@ -13,6 +13,8 @@ class Args
 {
     const SEPARATOR = '=';
 
+    const FLAG_PREFIX = '-';
+
     /**
      * @var array
      */
@@ -53,6 +55,13 @@ class Args
      */
     protected function buildArg($key, $arg)
     {
+        // Flag
+        if (substr($arg, 0, 1) === self::FLAG_PREFIX) {
+            $this->args[$arg] = true;
+
+            return;
+        }
+
         $pos = strpos($arg, self::SEPARATOR);
 
         if ($pos === false) {
@@ -67,6 +76,11 @@ class Args
         $value = substr($arg, $pos + 1, $len);
 
         $this->args[$key] = $value;
+    }
+
+    public function has($key)
+    {
+        array_key_exists($key, $this->args);
     }
 
     /**
@@ -85,5 +99,21 @@ class Args
         }
 
         return $default;
+    }
+
+    /**
+     * @param $key
+     *
+     * @return mixed
+     */
+    public function getRequired($key)
+    {
+        $exists = array_key_exists($key, $this->args);
+        if (!$exists) {
+            echo "{$key} is required";
+            exit(1);
+        }
+
+        return $this->args[$key];
     }
 }

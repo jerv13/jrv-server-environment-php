@@ -6,19 +6,37 @@ require_once(__DIR__ . '/autoload.php');
 
 $args = new \Jerv\ServerEnvironment\Service\Args($argv);
 
-\Jerv\ServerEnvironment\Service\ServerFactory::build(
-    $args->get('path-server-config'),
-    $args->get('path-config'),
-    $args->get('path-data')
+if ($args->get('-h', false) || $args->get('--help', false)) {
+    echo file_get_contents(__DIR__ . '/../docs/deploy-help');
+    exit(0);
+}
+
+$deploy = new \Jerv\ServerEnvironment\Service\Deploy(
+    $args->get('path-app-data', \Jerv\ServerEnvironment\Data\PathData::PATH_DEFAULT),
+    $args->get('permissions-app-data-folder', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FOLDER),
+    $args->get('permissions-app-data-file', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FILE)
 );
 
-$server = \Jerv\ServerEnvironment\Service\ServerFactory::getInstance();
+function getSecrets(
+    \Jerv\ServerEnvironment\Service\Args $args
+) {
+    $secretsFile = $args->get('secrets-file');
 
-$deploy = new \Jerv\ServerEnvironment\Service\Deploy($server);
+    if (!empty($secretsFile)) {
+        $secrets = file_get_contents($secretsFile);
+        if ($secrets === false) {
+            return [];
+        }
 
-$secrets = $args->get('secrets', '{}');
+        return json_decode($secrets, true);
+    }
 
-$secrets = json_decode($secrets, true);
+    $secrets = $args->get('secrets', '{}');
+
+    return json_decode($secrets, true);
+}
+
+$secrets = getSecrets($args);
 
 if (!is_array($secrets)) {
     // @todo error
@@ -31,3 +49,20 @@ $deploy->main(
     $args->get('version', \Jerv\ServerEnvironment\Data\Version::VERSION_DEFAULT),
     $secrets
 );
+
+\Jerv\ServerEnvironment\Service\ServerFactory::build(
+    $args->get('path-app-config', \Jerv\ServerEnvironment\Data\PathConfig::PATH_DEFAULT),
+    $args->get('server-config-filename', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_FILE),
+    $args->get('server-config-key', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_KEY),
+    $args->get('path-app-data', \Jerv\ServerEnvironment\Data\PathData::PATH_DEFAULT)
+);
+
+$server = \Jerv\ServerEnvironment\Service\ServerFactory::getInstance();
+
+$array = $server->__toArray();
+
+// hide secrets
+$array['secrets'] = '[*** SECRETS ***]';
+
+echo "\nServer state: \n" . json_encode($array, JSON_PRETTY_PRINT);
+

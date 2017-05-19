@@ -17,9 +17,13 @@ class Env implements Data
 
     const ENV_PROD = 'prod';
 
-    const FILENAME_ENV = 'env';
+    const DEFAULT_ENV = self::ENV_PROD;
 
-    const FILENAME_ENV_PRODUCTION = 'env-production';
+    const DEFAULT_ENV_PRODUCTION = self::ENV_PROD;
+
+    const FILENAME_ENV = 'env.php';
+
+    const FILENAME_ENV_PRODUCTION = 'env-production.php';
 
     const VARS_KEY = 'vars';
 
@@ -79,10 +83,19 @@ class Env implements Data
      */
     protected static function buildEvn($pathData)
     {
-        if (empty(self::$env)) {
-            $file = realpath($pathData . '/' . self::FILENAME_ENV);
-            self::$env = trim(fgets(fopen($file, 'r')));
+        if (!empty(self::$env)) {
+            return;
         }
+
+        $file = realpath($pathData . '/' . self::FILENAME_ENV);
+
+        if (!file_exists($file)) {
+            self::$env = self::DEFAULT_ENV;
+
+            return;
+        }
+
+        self::$env = require($file);
     }
 
     /**
@@ -92,11 +105,20 @@ class Env implements Data
      */
     protected static function buildProduction($pathData)
     {
-        if (empty(self::$production)) {
-            $file = realpath($pathData . '/' . self::FILENAME_ENV_PRODUCTION);
-            $productionEnv = trim(fgets(fopen($file, 'r')));
-            self::$production = ($productionEnv === self::$env);
+        if (!empty(self::$production)) {
+            return;
         }
+
+        $file = realpath($pathData . '/' . self::FILENAME_ENV_PRODUCTION);
+
+        if (!file_exists($file)) {
+            self::$production = (self::DEFAULT_ENV_PRODUCTION === self::$env);
+
+            return;
+        }
+
+        $productionEnv = require($file);
+        self::$production = ($productionEnv === self::$env);
     }
 
     /**

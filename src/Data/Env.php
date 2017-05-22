@@ -83,19 +83,12 @@ class Env implements Data
      */
     protected static function buildEvn($pathData)
     {
+
         if (!empty(self::$env)) {
             return;
         }
 
-        $file = realpath($pathData . '/' . self::FILENAME_ENV);
-
-        if (!file_exists($file)) {
-            self::$env = self::DEFAULT_ENV;
-
-            return;
-        }
-
-        self::$env = require($file);
+        self::$env = self::getEnvFromFile($pathData);
     }
 
     /**
@@ -118,6 +111,7 @@ class Env implements Data
         }
 
         $productionEnv = require($file);
+        $productionEnv = json_decode($productionEnv);
         self::$production = ($productionEnv === self::$env);
     }
 
@@ -252,6 +246,26 @@ class Env implements Data
         self::buildServerConfig($serverConfigFile, $serverConfigKey);
 
         self::$built = true;
+    }
+
+    /**
+     * getEnv
+     *
+     * @return string
+     */
+    public static function getEnvFromFile($pathData)
+    {
+        $file = realpath($pathData . '/' . self::FILENAME_ENV);
+
+        if (!file_exists($file)) {
+            $env = self::DEFAULT_ENV;
+
+            return json_decode($env);
+        }
+
+        $env = require($file);
+
+        return json_decode($env);
     }
 
     /**

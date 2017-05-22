@@ -14,16 +14,16 @@ if ($args->get('-h', false) || $args->get('--help', false)) {
 $deploy = new \Jerv\ServerEnvironment\Service\Deploy(
     $args->get('path-app-data', \Jerv\ServerEnvironment\Data\PathData::PATH_DEFAULT),
     $args->get('permissions-app-data-folder', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FOLDER),
-    $args->get('permissions-app-data-file', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FILE)
+    $args->get('permissions-app-data-file', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FILE),
+    $args->get('server-config-filename', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_FILE),
+    $args->get('server-config-key', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_KEY),
+    $args->get('path-app-config', \Jerv\ServerEnvironment\Data\PathConfig::PATH_DEFAULT),
+    $args->get('permissions-app-config-folder', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FOLDER),
+    $args->get('permissions-app-config-file', \Jerv\ServerEnvironment\Service\Permissions::DEFAULT_FILE)
 );
 
 echo $deploy->main(
     $args
 );
 
-echo $deploy->getServerOutput(
-    $args->get('path-app-config', \Jerv\ServerEnvironment\Data\PathConfig::PATH_DEFAULT),
-    $args->get('server-config-filename', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_FILE),
-    $args->get('server-config-key', \Jerv\ServerEnvironment\Data\Env::SERVER_CONFIG_KEY),
-    $args->get('path-app-data', \Jerv\ServerEnvironment\Data\PathData::PATH_DEFAULT)
-);
+echo $deploy->getServerOutput();

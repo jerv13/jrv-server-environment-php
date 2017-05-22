@@ -13,15 +13,36 @@ use Jerv\ServerEnvironment\Data\Version;
  */
 class Deploy
 {
+    protected $serverOptionValues
+        = [
+            'env' => [
+                'filename' => Env::FILENAME_ENV,
+                'label' => 'environment name',
+                'isEnv' => true,
+            ],
+            'env-production' => [
+                'filename' => Env::FILENAME_ENV_PRODUCTION,
+                'label' => 'production environment name',
+            ],
+            'version' => [
+                'filename' => Version::FILENAME,
+                'label' => 'version',
+            ],
+            'secrets' => [
+                'filename' => Secrets::FILENAME,
+                'label' => 'secrets',
+            ],
+        ];
+
     /**
      * @var array
      */
     protected $serverOptions
         = [
-            'env' => Env::FILENAME_ENV,
-            'env-production' => Env::FILENAME_ENV_PRODUCTION,
-            'version' => Version::FILENAME,
-            'secrets' => Secrets::FILENAME,
+            'env' => 'env',
+            'env-production' => 'env-production',
+            'version' => 'version',
+            'secrets' => 'secrets'
         ];
 
     /**
@@ -29,10 +50,10 @@ class Deploy
      */
     protected $serverFileJsonOptions
         = [
-            'env-file-json' => Env::FILENAME_ENV,
-            'env-production-file-json' => Env::FILENAME_ENV_PRODUCTION,
-            'version-file-json' => Version::FILENAME,
-            'secrets-file-json' => Secrets::FILENAME,
+            'env-file-json' => 'env',
+            'env-production-file-json' => 'env-production',
+            'version-file-json' => 'version',
+            'secrets-file-json' => 'secrets',
         ];
 
     /**
@@ -40,16 +61,16 @@ class Deploy
      */
     protected $serverFilePhpOptions
         = [
-            'env-file' => Env::FILENAME_ENV,
-            'env-production-file' => Env::FILENAME_ENV_PRODUCTION,
-            'version-file' => Version::FILENAME,
-            'secrets-file' => Secrets::FILENAME,
+            'env-file' => 'env',
+            'env-production-file' => 'env-production',
+            'version-file' => 'version',
+            'secrets-file' => 'secrets',
         ];
 
     /**
      * @var string
      */
-    protected $dataPath;
+    protected $dataPath = PathData::PATH_DEFAULT;
 
     /**
      * @var int
@@ -62,20 +83,59 @@ class Deploy
     protected $dataFilePermissions = Permissions::DEFAULT_FILE;
 
     /**
+     * @var string
+     */
+    protected $serverConfigFileName = Env::SERVER_CONFIG_FILE;
+
+    /**
+     * @var string
+     */
+    protected $serverConfigKey = Env::SERVER_CONFIG_KEY;
+
+    /**
+     * @var string
+     */
+    protected $configPath = PathConfig::PATH_DEFAULT;
+
+    /**
+     * @var int
+     */
+    protected $configFolderPermissions = Permissions::DEFAULT_FOLDER;
+
+    /**
+     * @var int
+     */
+    protected $configFilePermissions = Permissions::DEFAULT_FILE;
+
+    /**
      * @param string $dataPath
      * @param int    $dataFolderPermissions
      * @param int    $dataFilePermissions
+     * @param string $serverConfigFileName
+     * @param string $serverConfigKey
+     * @param string $configPath
+     * @param int    $configFolderPermissions
+     * @param int    $configFilePermissions
      */
     public function __construct(
-        $dataPath = PathConfig::PATH_DEFAULT,
-        $dataFolderPermissions = Permissions::DEFAULT_FOLDER,
-        $dataFilePermissions = Permissions::DEFAULT_FILE
+        string $dataPath = PathData::PATH_DEFAULT,
+        int $dataFolderPermissions = Permissions::DEFAULT_FOLDER,
+        int $dataFilePermissions = Permissions::DEFAULT_FILE,
+        string $serverConfigFileName = Env::SERVER_CONFIG_FILE,
+        string $serverConfigKey = Env::SERVER_CONFIG_KEY,
+        string $configPath = PathConfig::PATH_DEFAULT,
+        int $configFolderPermissions = Permissions::DEFAULT_FOLDER,
+        int $configFilePermissions = Permissions::DEFAULT_FOLDER
     ) {
         $this->dataPath = $dataPath;
         $this->dataFolderPermissions = $dataFolderPermissions;
         $this->dataFilePermissions = $dataFilePermissions;
+        $this->serverConfigFileName = $serverConfigFileName;
+        $this->serverConfigKey = $serverConfigKey;
+        $this->configPath = $configPath;
+        $this->configFolderPermissions = $configFolderPermissions;
+        $this->configFilePermissions = $configFilePermissions;
     }
-
 
     /**
      * @param string $sourceFilePath
@@ -83,7 +143,7 @@ class Deploy
      *
      * @return string
      */
-    public function getFileContents(string $sourceFilePath, array $params = [])
+    protected function getFileContents(string $sourceFilePath, array $params = [])
     {
         $contents = file_get_contents($sourceFilePath);
 
@@ -95,9 +155,26 @@ class Deploy
      *
      * @return string
      */
-    public function trim(string $value)
+    protected function trim(string $value)
     {
         return trim($value);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    protected function concat(string $value)
+    {
+        $maxlen = 16;
+        $len = strlen($value);
+
+        if ($len <= $maxlen) {
+            return $value;
+        }
+
+        return substr($value, 0, $maxlen) . '...';
     }
 
     /**
@@ -107,7 +184,24 @@ class Deploy
      */
     protected function getOutput(string $message)
     {
-        return $message . "\n";
+        $message = $message . "\n";
+
+        return $message;
+    }
+
+    /**
+     * @param string $option
+     *
+     * @return array
+     * @throws \Exception
+     */
+    protected function getOptionValue(string $option)
+    {
+        if (!array_key_exists($option, $this->serverOptionValues)) {
+            throw new \Exception("Option {$option} is not valid");
+        }
+
+        return $this->serverOptionValues[$option];
     }
 
     /**
@@ -134,11 +228,11 @@ class Deploy
      */
     public function assertValid(string $contents)
     {
-        $contents = json_decode($contents);
+        json_decode($contents);
 
         $err = json_last_error();
         if ($err !== JSON_ERROR_NONE) {
-            throw new \Exception('Data file contents must be JSON string');
+            throw new \Exception("Data file contents must be JSON string, received: {$contents}");
         }
     }
 
@@ -167,7 +261,7 @@ class Deploy
     {
         $this->assertValid($contents);
 
-        $contents = "<?php return " . $contents . ";\n";
+        $contents = "<?php return '{$contents}';";
 
         return $this->buildFile($filename, $contents);
     }
@@ -193,6 +287,39 @@ class Deploy
 
         file_put_contents($file, $contents);
 
+        chmod($file, $this->dataFilePermissions);
+
+        return $output;
+    }
+
+    /**
+     * @param string $env
+     *
+     * @return string
+     */
+    public function buildConfigFile(string $env)
+    {
+        $output = '';
+        $path = $this->configPath . '/' . $env;
+
+        $this->getOutput("Building config file for {$env}");
+
+        if (!file_exists($path)) {
+            mkdir($path, $this->configFolderPermissions);
+            $pathOutput = realpath($path);
+            $output .= $this->getOutput("Created config folder: {$pathOutput}");
+        }
+
+        $file = $path . '/' . Env::SERVER_CONFIG_FILE;
+
+        if (!file_exists($file)) {
+            $contents = "<?php return ['{$this->serverConfigKey}' => []];";
+            file_put_contents($file, $contents);
+            chmod($file, $this->configFilePermissions);
+            $fileOutput = realpath($file);
+            $output .= $this->getOutput("Created config file: {$fileOutput}");
+        }
+
         return $output;
     }
 
@@ -214,12 +341,12 @@ class Deploy
             $gitignoreEntries = [];
         }
 
-        $gitignoreData = array_merge($gitignoreData, $gitignoreExtras);
+        $gitignoreData = array_merge($gitignoreData, $gitignoreEntries);
 
         $gitignore = '';
 
         foreach ($gitignoreData as $gitignoreEntry) {
-            $gitignore = $this->trim($gitignoreEntry) . "/n";
+            $gitignore = $this->trim($gitignoreEntry) . "\n";
         }
 
         $output .= $this->buildFile(
@@ -231,35 +358,30 @@ class Deploy
     }
 
     /**
-     * @param string $pathConfig
-     * @param string $serverConfigFile
-     * @param string $serverConfigKey
-     * @param string $pathData
-     *
      * @return string
      */
-    public function getServerOutput(
-        $pathConfig = PathConfig::PATH_DEFAULT,
-        $serverConfigFile = Env::SERVER_CONFIG_FILE,
-        $serverConfigKey = Env::SERVER_CONFIG_KEY,
-        $pathData = PathData::PATH_DEFAULT
-    ) {
-        // Validate by running server build and showing output
-        ServerFactory::build(
-            $pathConfig,
-            $serverConfigFile,
-            $serverConfigKey,
-            $pathData
-        );
+    public function getServerOutput()
+    {
+        $output = '';
+        $output .= $this->getOutput("Env config file: {$this->serverConfigFileName}");
+        $output .= $this->getOutput("Env config key: {$this->serverConfigKey}");
 
-        $server = ServerFactory::getInstance();
+        // Validate by running server build and showing output
+        $server = ServerFactory::build(
+            $this->configPath,
+            $this->serverConfigFileName,
+            $this->serverConfigKey,
+            $this->dataPath
+        );
 
         $array = $server->__toArray();
 
         // hide secrets
-        $array['secrets'] = '[*** SECRETS ***]';
+        $array['secrets'] = '{*** SECRETS ***}';
 
-        return $this->getOutput("Server state: \n" . json_encode($array, JSON_PRETTY_PRINT));
+        $output .= $this->getOutput("Server state: \n" . var_export($array, true));
+
+        return $output;
     }
 
     /**
@@ -270,31 +392,50 @@ class Deploy
      */
     public function main(Args $args, array $params = [])
     {
-        $output = $this->getOutput('Validating:');
+        $output = $this->getOutput('START:');
         $argsArray = $args->__toArray();
 
         foreach ($argsArray as $key => $value) {
             if (array_key_exists($key, $this->serverFilePhpOptions)) {
-                $output .= $this->getOutput("Building {$key} from {$this->serverFilePhpOptions[$key]}");
-                $output .= $this->copyDataFile($value, $this->serverFilePhpOptions[$key], $params);
+                $serverOptions = $this->getOptionValue($this->serverFilePhpOptions[$key]);
+                $output .= $this->getOutput(
+                    "Building {$serverOptions['label']} using arg {$key} using {$value}"
+                );
+                $output .= $this->copyDataFile($value, $serverOptions['filename'], $params);
                 continue;
             }
 
             if (array_key_exists($key, $this->serverFileJsonOptions)) {
-                $output .= $this->getOutput("Building {$key} from {$this->serverFileJsonOptions[$key]}");
-                $contents = $this->getFileContents($this->serverFilePhpOptions[$key]);
-                $output .= $this->buildDataFile($value, $contents, $params);
+                $serverOptions = $this->getOptionValue($this->serverFileJsonOptions[$key]);
+                $output .= $this->getOutput(
+                    "Building {$serverOptions['label']} using arg {$key} using {$value}"
+                );
+                $contents = $this->getFileContents($value);
+                $output .= $this->buildDataFile($serverOptions['filename'], $contents, $params);
                 continue;
             }
 
             if (array_key_exists($key, $this->serverOptions)) {
-                $output .= $this->getOutput("Building {$key} from {$this->serverOptions[$key]}");
-                $output .= $this->buildDataFile($value, $this->serverOptions[$key], $params);
+                $serverOptions = $this->getOptionValue($this->serverOptions[$key]);
+
+                $outputValue = $this->concat($value);
+
+                $output .= $this->getOutput(
+                    "Building {$serverOptions['label']} using arg {$key} for {$this->serverOptions[$key]} " .
+                    "with data: {$outputValue}"
+                );
+
+                $output .= $this->buildDataFile($serverOptions['filename'], $value, $params);
                 continue;
             }
         }
 
-        $output .= $this->buildGitIgnore($args->get('gitignore-entries'));
+        // read env file to create config
+        $env = Env::getEnvFromFile($this->dataPath);
+
+        $this->buildConfigFile($env);
+
+        $output .= $this->buildGitIgnore($args->get('gitignore-entries', ''));
 
         return $output;
     }

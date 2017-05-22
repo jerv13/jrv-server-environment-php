@@ -33,7 +33,7 @@ class ServerFactory
      * @param string $serverConfigKey
      * @param string $pathData
      *
-     * @return void
+     * @return Server
      */
     public static function build(
         $pathConfig = PathConfig::PATH_DEFAULT,
@@ -43,7 +43,7 @@ class ServerFactory
     ) {
 
         if (!empty(self::$instance)) {
-            return;
+            return self::$instance;
         }
 
         PathConfig::build($pathConfig);
@@ -76,6 +76,8 @@ class ServerFactory
             Secrets::get(),
             Version::get()
         );
+
+        return self::$instance;
     }
 
     /**

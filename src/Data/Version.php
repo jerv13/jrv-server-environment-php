@@ -56,7 +56,9 @@ class Version implements Data
             return;
         }
 
-        self::$version = require($file);
+        $version = require($file);
+
+        self::$version = json_decode($version);
     }
 
     /**

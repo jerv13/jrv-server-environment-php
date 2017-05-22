@@ -6,7 +6,6 @@ use Interop\Container\ContainerInterface;
 use Jerv\ServerEnvironment\Data\Env;
 use Jerv\ServerEnvironment\Data\PathConfig;
 use Jerv\ServerEnvironment\Data\PathData;
-use Jerv\ServerEnvironment\Data\PathServerConfig;
 use Jerv\ServerEnvironment\Data\Secrets;
 use Jerv\ServerEnvironment\Data\Version;
 use Jerv\ServerEnvironment\Exception\ServerException;

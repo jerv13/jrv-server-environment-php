@@ -1,6 +1,6 @@
 <?php
 /**
  * env-production.php
- * @return string
+ * @return string JSON
  */
-return 'prod';
+return '"prod"';

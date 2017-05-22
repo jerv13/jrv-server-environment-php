@@ -2,11 +2,15 @@ Used to generate files required to set env, secrets and version
 
 Usage:
 
-php deploy.php [env={ENV_NAME}]
-               [env-production={ENV_PRODUCTION_NAME}]
-               [version={VERSION_STRING}]
-               [secrets-file-json={SECRETS_FILE_JSON}]
+php deploy.php [env={ENV_NAME_JSON}]
+               [env-production={ENV_PRODUCTION_NAME_JSON}]
+               [version={VERSION_STRING_JSON}]
                [secrets={SECRETS_JSON}]
+
+               [env-file-json={ENV_NAME__FILE_JSON}]
+               [env-production-file-json={ENV_PRODUCTION_NAME_FILE__JSON}]
+               [version-file-json={VERSION_STRING_FILE__JSON}]
+               [secrets-file-json={SECRETS_FILE_JSON}]
 
                [path-app-config={PATH}]
                [server-config-filename={SERVER_CONFIG_FILE}]
@@ -16,13 +20,22 @@ php deploy.php [env={ENV_NAME}]
                [permissions-app-data-folder={FOLDER_PERMISSIONS}]
                [permissions-app-data-file={FILE_PERMISSIONS}]
                
-Defaults:
+Options:
 
 env='prod'                                      // name of current env
 env-production='prod'                           // name of production env
 version='unknown'                               // version of current code
-secrets-file-json=null                          // file path to some-file.json
-secrets={}                                      // secrets as json (not recommended)
+secrets='{}'                                    // secrets as json (not recommended)
+
+env-file-json=null                              // file path to json data file (some-file.json)
+env-production-file-json=null                   // file path to json data file (some-file.json)
+version-file-json=null                          // file path to json data file (some-file.json)
+secrets-file-json=null                          // file path to json data file (some-file.json)
+
+env-file=null                                   // file path to custom data file (some-file.php)
+env-production-file=null                        // file path to custom data file (some-file.php)
+version-file=null                               // file path to custom data file (some-file.php)
+secrets-file=null                               // file path to custom data file (some-file.php)
 
 path-app-config=/../../../../../config          // path to app config
 server-config-filename=_server.php              // name of app config file for server AKA: /../../../../../config/prod/_server.php
@@ -32,5 +45,5 @@ path-app-data='/../../../../../data/_server'    // path to app data folder
 permissions-app-data-folder=0755                // app data folder permissions
 permissions-app-data-file=0655                  // app data file permissions
 
-
+gitignore-entries=[]                            // gitignore entries as JSON array
 

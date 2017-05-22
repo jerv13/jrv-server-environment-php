@@ -9,7 +9,7 @@ use Jerv\ServerEnvironment\Exception\ServerException;
  */
 class Version implements Data
 {
-    const VERSION_DEFAULT = 'unknown';
+    const VERSION_DEFAULT = '"unknown"';
 
     const FILENAME = 'version.php';
 

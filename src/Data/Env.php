@@ -9,13 +9,13 @@ use Jerv\ServerEnvironment\Exception\ServerException;
  */
 class Env implements Data
 {
-    const ENV_DEV = 'dev';
+    const ENV_DEV = '"dev"';
 
-    const ENV_LOCAL = 'local';
+    const ENV_LOCAL = '"local"';
 
-    const ENV_STAGE = 'stage';
+    const ENV_STAGE = '"stage"';
 
-    const ENV_PROD = 'prod';
+    const ENV_PROD = '"prod"';
 
     const DEFAULT_ENV = self::ENV_PROD;
 

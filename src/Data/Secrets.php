@@ -9,6 +9,8 @@ use Jerv\ServerEnvironment\Exception\ServerException;
  */
 class Secrets implements Data
 {
+    const SECRETS_DEFAULT = '{}';
+
     const FILENAME = 'secrets.php';
 
     /**
@@ -54,7 +56,9 @@ class Secrets implements Data
             return;
         }
 
-        self::$secrets = require($file);
+        $secrets = require($file);
+
+        self::$secrets = json_decode($secrets);
     }
 
     /**

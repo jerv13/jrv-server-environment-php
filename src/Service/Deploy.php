@@ -4,18 +4,48 @@ namespace Jerv\ServerEnvironment\Service;
 
 use Jerv\ServerEnvironment\Data\Env;
 use Jerv\ServerEnvironment\Data\PathConfig;
+use Jerv\ServerEnvironment\Data\PathData;
 use Jerv\ServerEnvironment\Data\Secrets;
 use Jerv\ServerEnvironment\Data\Version;
 
 /**
- * Class Deploy
- *
- * @author    James Jervis
- * @license   License.txt
- * @link      https://github.com/jerv13
+ * @author James Jervis - https://github.com/jerv13
  */
 class Deploy
 {
+    /**
+     * @var array
+     */
+    protected $serverOptions
+        = [
+            'env' => Env::FILENAME_ENV,
+            'env-production' => Env::FILENAME_ENV_PRODUCTION,
+            'version' => Version::FILENAME,
+            'secrets' => Secrets::FILENAME,
+        ];
+
+    /**
+     * @var array
+     */
+    protected $serverFileJsonOptions
+        = [
+            'env-file-json' => Env::FILENAME_ENV,
+            'env-production-file-json' => Env::FILENAME_ENV_PRODUCTION,
+            'version-file-json' => Version::FILENAME,
+            'secrets-file-json' => Secrets::FILENAME,
+        ];
+
+    /**
+     * @var array
+     */
+    protected $serverFilePhpOptions
+        = [
+            'env-file' => Env::FILENAME_ENV,
+            'env-production-file' => Env::FILENAME_ENV_PRODUCTION,
+            'version-file' => Version::FILENAME,
+            'secrets-file' => Secrets::FILENAME,
+        ];
+
     /**
      * @var string
      */
@@ -46,38 +76,110 @@ class Deploy
         $this->dataFilePermissions = $dataFilePermissions;
     }
 
+
+    /**
+     * @param string $sourceFilePath
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function getFileContents(string $sourceFilePath, array $params = [])
+    {
+        $contents = file_get_contents($sourceFilePath);
+
+        return $this->trim($contents);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    public function trim(string $value)
+    {
+        return trim($value);
+    }
+
     /**
      * @param string $message
      *
-     * @return void
+     * @return string
      */
-    protected function output($message)
+    protected function getOutput(string $message)
     {
-        echo $message . "\n";
+        return $message . "\n";
     }
 
     /**
-     * buildDataFile
+     * @param array  $params
+     * @param string $key
+     * @param null   $default
      *
-     * @param string $filename
+     * @return mixed|null
+     */
+    protected function getParam(array $params, string $key, $default = null)
+    {
+        if (array_key_exists($key, $params)) {
+            return $params[$key];
+        }
+
+        return $default;
+    }
+
+    /**
      * @param string $contents
      *
      * @return void
+     * @throws \Exception
      */
-    protected function buildDataFile($filename, $contents)
+    public function assertValid(string $contents)
     {
-        $contents = "<?php return " . $contents . ";\n";
+        $contents = json_decode($contents);
 
-        $this->buildFile($filename, $contents);
+        $err = json_last_error();
+        if ($err !== JSON_ERROR_NONE) {
+            throw new \Exception('Data file contents must be JSON string');
+        }
     }
 
     /**
-     * @param $filename
-     * @param $contents
+     * @param string $sourceFilePath
+     * @param string $destinationFilename
+     * @param array  $params
      *
-     * @return void
+     * @return string
      */
-    protected function buildFile($filename, $contents)
+    public function copyDataFile(string $sourceFilePath, string $destinationFilename, array $params = [])
+    {
+        $contents = $this->getFileContents($sourceFilePath);
+
+        return $this->buildFile($destinationFilename, $contents);
+    }
+
+    /**
+     * @param string $filename
+     * @param string $contents
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function buildDataFile(string $filename, string $contents, array $params = [])
+    {
+        $this->assertValid($contents);
+
+        $contents = "<?php return " . $contents . ";\n";
+
+        return $this->buildFile($filename, $contents);
+    }
+
+    /**
+     * @param string $filename
+     * @param string $contents
+     * @param array  $params
+     *
+     * @return string
+     */
+    public function buildFile(string $filename, string $contents, array $params = [])
     {
         $dataPath = $this->dataPath;
 
@@ -87,117 +189,113 @@ class Deploy
 
         $file = realpath($dataPath . '/' . $filename);
 
-        $this->output('Writing contents to ' . $file);
+        $output = $this->getOutput('Writing contents to ' . $file);
 
         file_put_contents($file, $contents);
+
+        return $output;
     }
 
     /**
-     * buildEnvFile
+     * @param string $gitignoreEntries
      *
-     * @param string $env
-     *
-     * @return void
+     * @return string
      */
-    public function buildEnvFile($env)
+    public function buildGitIgnore(string $gitignoreEntries)
     {
-        $env = "'" . trim($env) . "'";
-        $this->output('Preparing evn ' . substr($env, 0, 4) . '... ');
-        $this->buildDataFile(
-            Env::FILENAME_ENV,
-            $env
-        );
-    }
-
-    /**
-     * buildEnvProductionFile
-     *
-     * @param string $evnProduction
-     *
-     * @return void
-     */
-    public function buildEnvProductionFile($evnProduction)
-    {
-        $evnProduction = "'" . trim($evnProduction) . "'";
-        $this->output('Preparing env production ' . substr($evnProduction, 0, 4) . '... ');
-        $this->buildDataFile(
-            Env::FILENAME_ENV_PRODUCTION,
-            $evnProduction
-        );
-    }
-
-    /**
-     * buildVersionFile
-     *
-     * @param string $version
-     *
-     * @return void
-     */
-    public function buildVersionFile($version)
-    {
-        $version = "'" . trim($version) . "'";
-        $this->output('Preparing version ' . substr($version, 0, 4) . '... ');
-        $this->buildDataFile(
-            Version::FILENAME,
-            $version
-        );
-    }
-
-    /**
-     * buildSecretsFile
-     *
-     * @param array $secrets
-     *
-     * @return void
-     */
-    public function buildSecretsFile(array $secrets)
-    {
-        $contents = var_export($secrets, true);
-
-        $output = json_encode($secrets);
-
-        $this->output('Preparing secrets ' . substr($output, 0, 10) . '... ');
-
-        $this->buildDataFile(
-            Secrets::FILENAME,
-            trim($contents)
-        );
-    }
-
-    /**
-     * buildGitIgnore
-     *
-     * @return void
-     */
-    public function buildGitIgnore()
-    {
-        $this->output('Preparing .gitignore ');
-        $this->buildFile(
-            '.gitignore',
+        $output = $this->getOutput('Preparing .gitignore ');
+        $gitignoreData = [
             Secrets::FILENAME
+        ];
+
+        $gitignoreEntries = json_decode($gitignoreEntries);
+
+        if (empty($gitignoreEntries)) {
+            $gitignoreEntries = [];
+        }
+
+        $gitignoreData = array_merge($gitignoreData, $gitignoreExtras);
+
+        $gitignore = '';
+
+        foreach ($gitignoreData as $gitignoreEntry) {
+            $gitignore = $this->trim($gitignoreEntry) . "/n";
+        }
+
+        $output .= $this->buildFile(
+            '.gitignore',
+            $gitignore
         );
+
+        return $output;
     }
 
     /**
-     * main
+     * @param string $pathConfig
+     * @param string $serverConfigFile
+     * @param string $serverConfigKey
+     * @param string $pathData
      *
-     * @param string $env
-     * @param string $evnProduction
-     * @param string $version
-     * @param array  $secrets
-     *
-     * @return void
+     * @return string
      */
-    public function main(
-        $env = Env::ENV_LOCAL,
-        $evnProduction = Env::ENV_PROD,
-        $version = Version::VERSION_DEFAULT,
-        $secrets = []
+    public function getServerOutput(
+        $pathConfig = PathConfig::PATH_DEFAULT,
+        $serverConfigFile = Env::SERVER_CONFIG_FILE,
+        $serverConfigKey = Env::SERVER_CONFIG_KEY,
+        $pathData = PathData::PATH_DEFAULT
     ) {
-        $this->buildEnvFile($env);
-        $this->buildEnvProductionFile($evnProduction);
-        $this->buildVersionFile($version);
-        $this->buildSecretsFile($secrets);
-        $this->buildGitIgnore();
+        // Validate by running server build and showing output
+        ServerFactory::build(
+            $pathConfig,
+            $serverConfigFile,
+            $serverConfigKey,
+            $pathData
+        );
+
+        $server = ServerFactory::getInstance();
+
+        $array = $server->__toArray();
+
+        // hide secrets
+        $array['secrets'] = '[*** SECRETS ***]';
+
+        return $this->getOutput("Server state: \n" . json_encode($array, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * @param Args  $args
+     * @param array $params
+     *
+     * @return string
+     */
+    public function main(Args $args, array $params = [])
+    {
+        $output = $this->getOutput('Validating:');
+        $argsArray = $args->__toArray();
+
+        foreach ($argsArray as $key => $value) {
+            if (array_key_exists($key, $this->serverFilePhpOptions)) {
+                $output .= $this->getOutput("Building {$key} from {$this->serverFilePhpOptions[$key]}");
+                $output .= $this->copyDataFile($value, $this->serverFilePhpOptions[$key], $params);
+                continue;
+            }
+
+            if (array_key_exists($key, $this->serverFileJsonOptions)) {
+                $output .= $this->getOutput("Building {$key} from {$this->serverFileJsonOptions[$key]}");
+                $contents = $this->getFileContents($this->serverFilePhpOptions[$key]);
+                $output .= $this->buildDataFile($value, $contents, $params);
+                continue;
+            }
+
+            if (array_key_exists($key, $this->serverOptions)) {
+                $output .= $this->getOutput("Building {$key} from {$this->serverOptions[$key]}");
+                $output .= $this->buildDataFile($value, $this->serverOptions[$key], $params);
+                continue;
+            }
+        }
+
+        $output .= $this->buildGitIgnore($args->get('gitignore-entries'));
+
+        return $output;
     }
 }

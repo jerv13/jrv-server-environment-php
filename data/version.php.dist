@@ -1,6 +1,6 @@
 <?php
 /**
  * version.php
- * @return string
+ * @return string JSON
  */
-return 'unknown';
+return '"unknown"';

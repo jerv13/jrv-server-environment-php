@@ -78,9 +78,14 @@ class Args
         $this->args[$key] = $value;
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
     public function has($key)
     {
-        array_key_exists($key, $this->args);
+        return array_key_exists($key, $this->args);
     }
 
     /**
@@ -115,5 +120,13 @@ class Args
         }
 
         return $this->args[$key];
+    }
+
+    /**
+     * @return array
+     */
+    public function __toArray()
+    {
+        return $this->args;
     }
 }

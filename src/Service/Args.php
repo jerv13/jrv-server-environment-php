@@ -3,8 +3,6 @@
 namespace Jerv\ServerEnvironment\Service;
 
 /**
- * Class Args
- *
  * @author    James Jervis
  * @license   License.txt
  * @link      https://github.com/jerv13
@@ -21,8 +19,6 @@ class Args
     protected $args = [];
 
     /**
-     * Constructor.
-     *
      * @param array $args
      */
     public function __construct(
@@ -32,8 +28,6 @@ class Args
     }
 
     /**
-     * buildArgs
-     *
      * @param $args
      *
      * @return void
@@ -46,8 +40,6 @@ class Args
     }
 
     /**
-     * buildArg
-     *
      * @param $key
      * @param $arg
      *
@@ -89,8 +81,6 @@ class Args
     }
 
     /**
-     * get
-     *
      * @param string $key
      * @param null   $default
      *

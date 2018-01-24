@@ -10,22 +10,12 @@ use Jerv\ServerEnvironment\Exception\ServerException;
 class Version implements Data
 {
     const VERSION_DEFAULT = '"unknown"';
-
     const FILENAME = 'version.php';
 
-    /**
-     * @var bool
-     */
     protected static $built = false;
-
-    /**
-     * @var array
-     */
     protected static $version = self::VERSION_DEFAULT;
 
     /**
-     * assertBuilt
-     *
      * @return void
      * @throws ServerException
      */
@@ -37,8 +27,6 @@ class Version implements Data
     }
 
     /**
-     * build
-     *
      * @return void
      */
     public static function build($pathData)
@@ -62,9 +50,8 @@ class Version implements Data
     }
 
     /**
-     * getSecrets
-     *
-     * @return array
+     * @return string
+     * @throws ServerException
      */
     public static function get()
     {

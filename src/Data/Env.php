@@ -10,62 +10,26 @@ use Jerv\ServerEnvironment\Exception\ServerException;
 class Env implements Data
 {
     const ENV_DEV = '"dev"';
-
     const ENV_LOCAL = '"local"';
-
     const ENV_STAGE = '"stage"';
-
     const ENV_PROD = '"prod"';
-
     const DEFAULT_ENV = self::ENV_PROD;
-
     const DEFAULT_ENV_PRODUCTION = self::ENV_PROD;
-
     const FILENAME_ENV = 'env.php';
-
     const FILENAME_ENV_PRODUCTION = 'env-production.php';
-
     const VARS_KEY = 'vars';
-
     const INIT_SET_KEY = 'init-set';
-
     const SERVER_CONFIG_FILE = '_server.php';
-
     const SERVER_CONFIG_KEY = '_server';
 
-    /**
-     * @var bool
-     */
     protected static $built = false;
-
-    /**
-     * @var string
-     */
     protected static $env = null;
-
-    /**
-     * @var string
-     */
     protected static $envConfigPath = null;
-
-    /**
-     * @var bool
-     */
     protected static $production = null;
-
-    /**
-     * @var array
-     */
     protected static $serverConfig = [];
-
-    /**
-     * @var array
-     */
     protected static $vars = [];
 
     /**
-     * assertBuilt
-     *
      * @return void
      * @throws ServerException
      */
@@ -77,8 +41,6 @@ class Env implements Data
     }
 
     /**
-     * buildEvn
-     *
      * @return void
      */
     protected static function buildEvn($pathData)
@@ -92,8 +54,6 @@ class Env implements Data
     }
 
     /**
-     * buildProduction
-     *
      * @return void
      */
     protected static function buildProduction($pathData)
@@ -116,8 +76,6 @@ class Env implements Data
     }
 
     /**
-     * buildServerConfig
-     *
      * @param string $serverConfigFile
      * @param string $serverConfigKey
      *
@@ -151,8 +109,6 @@ class Env implements Data
     }
 
     /**
-     * buildServerVars
-     *
      * @return void
      */
     protected static function buildServerVars()
@@ -177,8 +133,6 @@ class Env implements Data
     }
 
     /**
-     * setInit
-     *
      * @return void
      */
     protected static function setInit()
@@ -205,8 +159,6 @@ class Env implements Data
     }
 
     /**
-     * buildEvnConfigPath
-     *
      * @param $pathConfig
      *
      * @return void
@@ -225,14 +177,13 @@ class Env implements Data
     }
 
     /**
-     * build
-     *
      * @param string $pathConfig
      * @param string $serverConfigFile
      * @param string $serverConfigKey
      * @param string $pathData
      *
      * @return void
+     * @throws ServerException
      */
     public static function build(
         $pathConfig = PathConfig::PATH_DEFAULT,
@@ -249,8 +200,6 @@ class Env implements Data
     }
 
     /**
-     * getEnv
-     *
      * @return string
      */
     public static function getEnvFromFile($pathData)
@@ -269,9 +218,8 @@ class Env implements Data
     }
 
     /**
-     * get
-     *
      * @return string
+     * @throws ServerException
      */
     public static function get()
     {
@@ -279,11 +227,10 @@ class Env implements Data
     }
 
     /**
-     * getEnv
-     *
      * @return string
+     * @throws ServerException
      */
-    public static function getEnv()
+    public static function getEnv():string
     {
         self::assertBuilt();
 
@@ -291,11 +238,10 @@ class Env implements Data
     }
 
     /**
-     * isProduction
-     *
      * @return bool
+     * @throws ServerException
      */
-    public static function isProduction()
+    public static function isProduction():bool
     {
         self::assertBuilt();
 
@@ -303,11 +249,10 @@ class Env implements Data
     }
 
     /**
-     * getConfig
-     *
      * @return array
+     * @throws ServerException
      */
-    public static function getServerVars()
+    public static function getServerVars():array
     {
         self::assertBuilt();
 
@@ -315,11 +260,10 @@ class Env implements Data
     }
 
     /**
-     * getEnvConfigPath
-     *
-     * @return array
+     * @return string
+     * @throws ServerException
      */
-    public static function getEnvConfigPath()
+    public static function getEnvConfigPath(): string
     {
         self::assertBuilt();
 

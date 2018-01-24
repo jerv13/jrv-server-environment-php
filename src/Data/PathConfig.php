@@ -11,14 +11,9 @@ class PathConfig implements Data
 {
     const PATH_DEFAULT = __DIR__ . '/../../../../../config';
 
-    /**
-     * @var string
-     */
     protected static $pathConfig;
 
     /**
-     * assertBuilt
-     *
      * @return void
      * @throws ServerException
      */
@@ -30,8 +25,6 @@ class PathConfig implements Data
     }
 
     /**
-     * build
-     *
      * @param string $pathConfig
      *
      * @return void
@@ -58,8 +51,6 @@ class PathConfig implements Data
     }
 
     /**
-     * get
-     *
      * @return null|string
      * @throws ServerException
      */

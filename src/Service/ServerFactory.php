@@ -2,7 +2,6 @@
 
 namespace Jerv\ServerEnvironment\Service;
 
-use Interop\Container\ContainerInterface;
 use Jerv\ServerEnvironment\Data\Env;
 use Jerv\ServerEnvironment\Data\PathConfig;
 use Jerv\ServerEnvironment\Data\PathData;
@@ -33,6 +32,7 @@ class ServerFactory
      * @param string $pathData
      *
      * @return Server
+     * @throws ServerException
      */
     public static function build(
         $pathConfig = PathConfig::PATH_DEFAULT,
@@ -40,7 +40,6 @@ class ServerFactory
         $serverConfigKey = Env::SERVER_CONFIG_KEY,
         $pathData = PathData::PATH_DEFAULT
     ) {
-
         if (!empty(self::$instance)) {
             return self::$instance;
         }
@@ -95,11 +94,10 @@ class ServerFactory
     }
 
     /**
-     * __invoke
-     *
-     * @param ContainerInterface|null $container
+     * @param null $container
      *
      * @return Server
+     * @throws ServerException
      */
     public function __invoke($container = null)
     {

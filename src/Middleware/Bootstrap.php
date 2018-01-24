@@ -10,37 +10,18 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class Bootstrap
- *
  * @author    James Jervis
  * @license   License.txt
  * @link      https://github.com/jerv13
  */
 class Bootstrap
 {
-    /**
-     * @var string
-     */
     protected $pathConfig = null;
-
-    /**
-     * @var string
-     */
     protected $serverConfigFile = null;
-
-    /**
-     * @var string
-     */
     protected $serverConfigKey;
-
-    /**
-     * @var string
-     */
     protected $pathData = null;
 
     /**
-     * Constructor.
-     *
      * @param string $pathConfig
      * @param string $serverConfigFile
      * @param string $serverConfigKey
@@ -59,13 +40,12 @@ class Bootstrap
     }
 
     /**
-     * __invoke
-     *
      * @param RequestInterface  $request
      * @param ResponseInterface $response
      * @param callable|null     $next
      *
-     * @return mixed
+     * @return ResponseInterface
+     * @throws \Jerv\ServerEnvironment\Exception\ServerException
      */
     public function __invoke(
         RequestInterface $request,

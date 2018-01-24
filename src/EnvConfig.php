@@ -5,8 +5,6 @@ namespace Jerv\ServerEnvironment;
 use Jerv\ServerEnvironment\Service\ServerFactory;
 
 /**
- * Class EnvConfig
- *
  * @author    James Jervis
  * @license   License.txt
  * @link      https://github.com/jerv13
@@ -14,8 +12,6 @@ use Jerv\ServerEnvironment\Service\ServerFactory;
 class EnvConfig
 {
     /**
-     * glob
-     *
      * @param $pattern
      *
      * @return array
@@ -26,9 +22,8 @@ class EnvConfig
     }
 
     /**
-     * getPattern
-     *
      * @return string
+     * @throws Exception\ServerException
      */
     protected function getPattern()
     {
@@ -41,9 +36,8 @@ class EnvConfig
     }
 
     /**
-     * __invoke
-     *
-     * @return array
+     * @return \Generator
+     * @throws Exception\ServerException
      */
     public function __invoke()
     {

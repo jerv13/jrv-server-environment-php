@@ -34,9 +34,6 @@ class Deploy
             ],
         ];
 
-    /**
-     * @var array
-     */
     protected $serverOptions
         = [
             'env' => 'env',
@@ -45,9 +42,6 @@ class Deploy
             'secrets' => 'secrets'
         ];
 
-    /**
-     * @var array
-     */
     protected $serverFileJsonOptions
         = [
             'env-file-json' => 'env',
@@ -56,9 +50,6 @@ class Deploy
             'secrets-file-json' => 'secrets',
         ];
 
-    /**
-     * @var array
-     */
     protected $serverFilePhpOptions
         = [
             'env-file' => 'env',
@@ -67,44 +58,13 @@ class Deploy
             'secrets-file' => 'secrets',
         ];
 
-    /**
-     * @var string
-     */
     protected $dataPath = PathData::PATH_DEFAULT;
-
-    /**
-     * @var int
-     */
     protected $dataFolderPermissions = Permissions::DEFAULT_FOLDER;
-
-    /**
-     * @var int
-     */
     protected $dataFilePermissions = Permissions::DEFAULT_FILE;
-
-    /**
-     * @var string
-     */
     protected $serverConfigFileName = Env::SERVER_CONFIG_FILE;
-
-    /**
-     * @var string
-     */
     protected $serverConfigKey = Env::SERVER_CONFIG_KEY;
-
-    /**
-     * @var string
-     */
     protected $configPath = PathConfig::PATH_DEFAULT;
-
-    /**
-     * @var int
-     */
     protected $configFolderPermissions = Permissions::DEFAULT_FOLDER;
-
-    /**
-     * @var int
-     */
     protected $configFilePermissions = Permissions::DEFAULT_FILE;
 
     /**
@@ -256,6 +216,7 @@ class Deploy
      * @param array  $params
      *
      * @return string
+     * @throws \Exception
      */
     public function buildDataFile(string $filename, string $contents, array $params = [])
     {
@@ -359,6 +320,7 @@ class Deploy
 
     /**
      * @return string
+     * @throws \Jerv\ServerEnvironment\Exception\ServerException
      */
     public function getServerOutput()
     {
@@ -389,6 +351,7 @@ class Deploy
      * @param array $params
      *
      * @return string
+     * @throws \Exception
      */
     public function main(Args $args, array $params = [])
     {

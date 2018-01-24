@@ -6,8 +6,7 @@ use Jerv\ServerEnvironment\Service\Server;
 use Jerv\ServerEnvironment\Service\ServerFactory;
 
 /**
- * Class ModuleConfig
- *
+ * @author James Jervis - https://github.com/jerv13
  */
 class ModuleConfig
 {

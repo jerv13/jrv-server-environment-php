@@ -7,7 +7,7 @@ require_once(__DIR__ . '/autoload.php');
 $args = new \Jerv\ServerEnvironment\Service\Args($argv);
 
 if ($args->get('-h', false) || $args->get('--help', false)) {
-    echo file_get_contents(__DIR__ . '/../docs/deploy-help');
+    echo file_get_contents(__DIR__ . '/../docs/deploy-help.md');
     exit(0);
 }
 

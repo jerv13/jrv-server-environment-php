@@ -10,22 +10,12 @@ use Jerv\ServerEnvironment\Exception\ServerException;
 class Secrets implements Data
 {
     const SECRETS_DEFAULT = '{}';
-
     const FILENAME = 'secrets.php';
 
-    /**
-     * @var bool
-     */
     protected static $built = false;
-
-    /**
-     * @var array
-     */
     protected static $secrets = [];
 
     /**
-     * assertBuilt
-     *
      * @return void
      * @throws ServerException
      */
@@ -37,8 +27,6 @@ class Secrets implements Data
     }
 
     /**
-     * build
-     *
      * @return void
      */
     public static function build($pathData)
@@ -62,9 +50,8 @@ class Secrets implements Data
     }
 
     /**
-     * getSecrets
-     *
      * @return array
+     * @throws ServerException
      */
     public static function get()
     {
@@ -74,11 +61,10 @@ class Secrets implements Data
     }
 
     /**
-     * getValue
+     * @param $key
      *
-     * @param string $key
-     *
-     * @return null
+     * @return mixed|null
+     * @throws ServerException
      */
     public static function getValue($key)
     {

@@ -6,8 +6,6 @@ use Jerv\ServerEnvironment\Data\Version;
 use Jerv\ServerEnvironment\Exception\ServerException;
 
 /**
- * Class Server
- *
  * @author    James Jervis
  * @license   License.txt
  * @link      https://github.com/jerv13
@@ -50,8 +48,6 @@ class Server
     protected $version = Version::VERSION_DEFAULT;
 
     /**
-     * Constructor.
-     *
      * @param string $dataPath
      * @param string $configPath
      * @param bool   $isProduction
@@ -59,15 +55,17 @@ class Server
      * @param array  $envVars
      * @param array  $secrets
      * @param string $version
+     *
+     * @throws ServerException
      */
     public function __construct(
-        $dataPath,
-        $configPath,
-        $isProduction = true,
-        $env = 'prod',
-        $envVars = [],
-        $secrets = [],
-        $version = Version::VERSION_DEFAULT
+        string $dataPath,
+        string $configPath,
+        bool $isProduction = true,
+        string $env = 'prod',
+        array $envVars = [],
+        array $secrets = [],
+        string $version = Version::VERSION_DEFAULT
     ) {
         $this->setDataPath($dataPath);
         $this->setConfigPath($configPath);
@@ -79,8 +77,6 @@ class Server
     }
 
     /**
-     * setDataPath
-     *
      * @param string $dataPath
      *
      * @return void
@@ -98,8 +94,6 @@ class Server
     }
 
     /**
-     * getDataPath
-     *
      * @return string
      */
     public function getDataPath()
@@ -108,8 +102,6 @@ class Server
     }
 
     /**
-     * setConfigPath
-     *
      * @param string $configPath
      *
      * @return void
@@ -127,8 +119,6 @@ class Server
     }
 
     /**
-     * getConfigPath
-     *
      * @return string
      */
     public function getConfigPath(): string
@@ -137,8 +127,6 @@ class Server
     }
 
     /**
-     * isProduction
-     *
      * @return bool
      */
     public function isProduction(): bool
@@ -147,8 +135,6 @@ class Server
     }
 
     /**
-     * getEnv
-     *
      * @return string
      */
     public function getEnv(): string
@@ -157,8 +143,6 @@ class Server
     }
 
     /**
-     * getEnvVars
-     *
      * @return array
      */
     public function getEnvVars(): array
@@ -167,8 +151,6 @@ class Server
     }
 
     /**
-     * getEnvVar
-     *
      * @param string     $key
      * @param null|mixed $default
      *
@@ -184,8 +166,6 @@ class Server
     }
 
     /**
-     * getSecrets
-     *
      * @return array
      */
     public function getSecrets(): array
@@ -194,8 +174,6 @@ class Server
     }
 
     /**
-     * getSecret
-     *
      * @param $key
      *
      * @return mixed|null
@@ -210,8 +188,6 @@ class Server
     }
 
     /**
-     * getVersion
-     *
      * @return string
      */
     public function getVersion(): string

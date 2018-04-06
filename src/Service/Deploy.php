@@ -242,7 +242,7 @@ class Deploy
             mkdir($dataPath, $this->dataFolderPermissions);
         }
 
-        $file = realpath($dataPath . '/' . $filename);
+        $file = $dataPath . '/' . $filename;
 
         $output = $this->getOutput('Writing contents to ' . $file);
 

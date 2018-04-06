@@ -46,7 +46,7 @@ class Secrets implements Data
 
         $secrets = require($file);
 
-        self::$secrets = json_decode($secrets);
+        self::$secrets = json_decode($secrets, true);
     }
 
     /**
